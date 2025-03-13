@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">My Wishlist</h2>
+    
+    {% if wishlisted_items %}
+    <div class="row g-4">
+        {% for wishlist_entry in wishlisted_items %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100">
+                {% if wishlist_entry.item.images %}
+                {% if 'cloudinary.com' in wishlist_entry.item.images[0].image_url %}
+                <img src="{{ wishlist_entry.item.images[0].image_url }}" 
+                     class="card-img-top" alt="{{ wishlist_entry.item.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{{ url_for('static', filename='uploads/' + wishlist_entry.item.images[0].image_url) }}" 
+                     class="card-img-top" alt="{{ wishlist_entry.item.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                {% else %}
+                <div class="bg-light text-center py-5">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-truncate">{{ wishlist_entry.item.name }}</h5>
+                    <span class="badge bg-info mb-2">{{ wishlist_entry.item.category.replace('_', ' ').title() }}</span>
+                    {% if wishlist_entry.item.is_donation %}
+                    <span class="badge bg-success mb-2">FREE</span>
+                    {% else %}
+                    <p class="card-text mb-2">₹{{ "%.2f"|format(wishlist_entry.item.price) }}</p>
+                    {% if wishlist_entry.item.is_bargainable %}
+                    <span class="badge bg-success mb-2">Bargainable</span>
+                    {% else %}
+                    <span class="badge bg-danger mb-2">Not Bargainable</span>
+                    {% endif %}
+                    {% endif %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Condition: {{ wishlist_entry.item.condition.replace('_', ' ').title() }}
+                        </small>
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('items.item_detail', id=wishlist_entry.item.id) }}" class="btn btn-outline-primary">View Details</a>
+                        <form action="{{ url_for('items.toggle_wishlist', id=wishlist_entry.item.id) }}" method="POST" class="m-0">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-heart-broken"></i> Remove from Wishlist
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Added on {{ wishlist_entry.date_added.strftime('%Y-%m-%d') }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center mt-5">
+        <h4>Your wishlist is empty</h4>
+        <p>Browse <a href="{{ url_for('items.buy_get') }}">available items</a> and add some to your wishlist!</p>
+    </div>
+    {% endif %}
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle wishlist removal animation
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const button = this.querySelector('button');
+                const card = button.closest('.col-md-4');
+                
+                // Fade out the card
+                card.style.transition = 'opacity 0.5s ease';
+                card.style.opacity = '0';
+                
+                // After animation, submit the form
+                setTimeout(() => {
+                    this.submit();
+                }, 500);
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 

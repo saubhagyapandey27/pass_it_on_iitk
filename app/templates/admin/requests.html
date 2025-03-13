@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Requests</h2>
+    
+    {% if not requests %}
+    <div class="alert alert-info">No requests found.</div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Item</th>
+                    <th>Buyer</th>
+                    <th>Seller</th>
+                    <th>Date Requested</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td><a href="{{ url_for('items.item_detail', id=request.item.id) }}" target="_blank">{{ request.item.name }}</a></td>
+                    <td>{{ request.buyer.name }}</td>
+                    <td>{{ request.seller.name }}</td>
+                    <td>{{ request.date_requested.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if request.status == 'pending' %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% elif request.status == 'accepted' %}
+                        <span class="badge bg-success">Accepted</span>
+                        {% else %}
+                        <span class="badge bg-danger">Declined</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.delete_request', id=request.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this request? This cannot be undone.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

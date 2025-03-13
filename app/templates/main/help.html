@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Help Center</h1>
+    
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <a href="#getting-started" class="list-group-item list-group-item-action">Getting Started</a>
+                <a href="#buying-guide" class="list-group-item list-group-item-action">Buying Guide</a>
+                <a href="#selling-guide" class="list-group-item list-group-item-action">Selling Guide</a>
+                <a href="#account-management" class="list-group-item list-group-item-action">Account Management</a>
+                <a href="#safety-tips" class="list-group-item list-group-item-action">Safety Tips</a>
+                <a href="#etiquette" class="list-group-item list-group-item-action">Campus Etiquette</a>
+                <a href="#contact" class="list-group-item list-group-item-action">Contact Us</a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Getting Started -->
+            <section id="getting-started" class="mb-5">
+                <h2>Getting Started</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Creating an Account</h5>
+                        <ol>
+                            <li>Click on "Sign Up" in the navigation menu</li>
+                            <li>Enter your IITK email address, name, and other required information</li>
+                            <li>Create a secure password</li>
+                            <li>Verify your email with the OTP sent to your IITK email</li>
+                            <li>Complete your profile</li>
+                        </ol>
+                        
+                        <h5>Navigating the Platform</h5>
+                        <ul>
+                            <li><strong>Home:</strong> Overview of the platform</li>
+                            <li><strong>Buy/Get:</strong> Browse available items</li>
+                            <li><strong>Sell/Donate:</strong> List your items</li>
+                            <li><strong>My Items:</strong> Manage your listed items</li>
+                            <li><strong>Wishlist:</strong> View saved items</li>
+                            <li><strong>Buying Requests:</strong> Manage your buying and selling requests</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Buying Guide -->
+            <section id="buying-guide" class="mb-5">
+                <h2>Buying Guide</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Finding Items</h5>
+                        <p>Use the search and filter options on the Buy/Get page to find specific items:</p>
+                        <ul>
+                            <li>Search by keyword</li>
+                            <li>Filter by category</li>
+                            <li>Set price range</li>
+                            <li>Filter by condition</li>
+                            <li>Show only free items or bargainable items</li>
+                            <li>Sort by newest, oldest, or price</li>
+                        </ul>
+                        
+                        <h5>Contacting Givers</h5>
+                        <ol>
+                            <li>Express interest in an item</li>
+                            <li>Wait for the giver to accept your request</li>
+                            <li>Once accepted, you'll see the giver's contact information</li>
+                            <li>Contact the giver via WhatsApp, call, or email to arrange a meeting</li>
+                        </ol>
+                        
+                        <h5>Meeting and Transaction Tips</h5>
+                        <ul>
+                            <li>Meet in public places on campus (e.g., hostel common areas, canteens)</li>
+                            <li>Inspect the item thoroughly before paying</li>
+                            <li>Use secure payment methods (UPI, cash)</li>
+                            <li>Be punctual for meetings</li>
+                            <li>Communicate clearly about any issues or concerns</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Selling Guide -->
+            <section id="selling-guide" class="mb-5">
+                <h2>Selling Guide</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Creating Effective Listings</h5>
+                        <ul>
+                            <li>Use clear, descriptive titles</li>
+                            <li>Select the appropriate category</li>
+                            <li>Be honest about the condition</li>
+                            <li>Provide detailed specifications</li>
+                            <li>Set a fair price (or mark as donation)</li>
+                            <li>Take clear, well-lit photos from multiple angles</li>
+                        </ul>
+                        
+                        <h5>Managing Taker Requests</h5>
+                        <ol>
+                            <li>Check your notifications</li>
+                            <li>Review requests</li>
+                            <li>Accept or decline requests</li>
+                            <li>Communicate promptly with takers</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Account Management -->
+            <section id="account-management" class="mb-5">
+                <h2>Account Management</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Resetting Your Password</h5>
+                        <ol>
+                            <li>Click "Login" in the navigation menu</li>
+                            <li>Click "Forgot Password?" link</li>
+                            <li>Enter your IITK email</li>
+                            <li>Check your email for the OTP</li>
+                            <li>Enter the OTP and your new password</li>
+                        </ol>
+                        
+                        <h5>Managing Your Listings</h5>
+                        <ul>
+                            <li>View all your listings on the "My Items" page</li>
+                            <li>Mark items as unavailable once sold</li>
+                            <li>Remove listings if needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Safety Tips -->
+            <section id="safety-tips" class="mb-5">
+                <h2>Safety Tips</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Personal Safety</h5>
+                        <ul>
+                            <li>Always meet in public places on campus</li>
+                            <li>Bring a friend for high-value transactions</li>
+                            <li>Trust your instincts - if something feels wrong, walk away</li>
+                            <li>Don't share unnecessary personal information</li>
+                        </ul>
+                        
+                        <h5>Transaction Safety</h5>
+                        <ul>
+                            <li>Inspect items thoroughly before paying</li>
+                            <li>Use secure payment methods (UPI, cash)</li>
+                            <li>Don't make advance payments without seeing the item</li>
+                            <li>Keep records of your transactions</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Campus Etiquette -->
+            <section id="etiquette" class="mb-5">
+                <h2>Campus Etiquette</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Respectful Communication</h5>
+                        <ul>
+                            <li>Be polite and respectful in all communications</li>
+                            <li>Respond to messages promptly</li>
+                            <li>Be clear about your intentions</li>
+                            <li>Don't spam givers with lowball offers</li>
+                        </ul>
+                        
+                        <h5>Meeting Etiquette</h5>
+                        <ul>
+                            <li>Be punctual for meetings</li>
+                            <li>Inform the other party if you're running late</li>
+                            <li>If you need to cancel, give as much notice as possible</li>
+                            <li>Be prepared with the exact amount for payment</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contact Us -->
+            <section id="contact" class="mb-5">
+                <h2>Contact Us</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you have any questions, concerns, or feedback, please contact us at:</p>
+                        <p><strong>Email:</strong> <a href="mailto:passitoniitk@gmail.com">passitoniitk@gmail.com</a></p>
+                        
+                        <p>For quick answers to common questions, check our <a href="{{ url_for('main.faq') }}">FAQ page</a>.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Smooth scrolling for anchor links
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.list-group-item').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+{% endblock %} 

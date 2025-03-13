@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>List an Item</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.category.label(class="form-label") }}
+            {{ form.category(class="form-select") }}
+            {% for error in form.category.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.condition.label(class="form-label") }}
+            {{ form.condition(class="form-select") }}
+            {% for error in form.condition.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3" id="defectDescriptionDiv" style="display: none;">
+            {{ form.defect_description.label(class="form-label") }}
+            {{ form.defect_description(class="form-control") }}
+            {% for error in form.defect_description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.specifications.label(class="form-label") }}
+            {{ form.specifications(class="form-control", rows=4) }}
+            {% for error in form.specifications.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Attractive Checkboxes -->
+        <div class="mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        {{ form.is_donation(class="form-check-input", style="transform: scale(1.5);") }}
+                        <label class="form-check-label ms-2" for="{{ form.is_donation.id }}">
+                            <span class="fs-5 text-success">🎁 {{ form.is_donation.label.text }}</span>
+                            <small class="d-block text-muted">Help your fellow students by donating items for free</small>
+                        </label>
+                    </div>
+
+                    <div id="priceSection">
+                        <div class="mb-3">
+                            {{ form.price.label(class="form-label") }}
+                            {{ form.price(class="form-control") }}
+                            {% for error in form.price.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-check form-switch">
+                            {{ form.is_bargainable(class="form-check-input", style="transform: scale(1.5);") }}
+                            <label class="form-check-label ms-2" for="{{ form.is_bargainable.id }}">
+                                <span class="fs-5 text-primary">💰 {{ form.is_bargainable.label.text }}</span>
+                                <small class="d-block text-muted">Allow takers to negotiate the price</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form.images.label(class="form-label") }}
+            {{ form.images(class="form-control") }}
+            <small class="text-muted">Upload up to 2 images (jpg, jpeg, png, gif). Images will be automatically compressed if larger than 500KB.</small>
+            {% for error in form.images.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+
+{% block scripts %}
+<script>
+    // Show/hide defect description based on condition
+    document.getElementById('condition').addEventListener('change', function() {
+        var defectDiv = document.getElementById('defectDescriptionDiv');
+        defectDiv.style.display = this.value === 'minor_defects' ? 'block' : 'none';
+    });
+
+    // Show/hide price and bargainable sections based on donation
+    document.getElementById('is_donation').addEventListener('change', function() {
+        var priceSection = document.getElementById('priceSection');
+        priceSection.style.display = this.checked ? 'none' : 'block';
+        if (this.checked) {
+            document.getElementById('price').value = '0';
+            document.getElementById('is_bargainable').checked = false;
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

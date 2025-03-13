@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Listed Items</h2>
+    
+    {% if not items %}
+        <div class="alert alert-info" role="alert">
+            You haven't listed any items yet. <a href="{{ url_for('items.sell_donate') }}" class="alert-link">List an item now!</a>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for item in items %}
+                <div class="col">
+                    <div class="card h-100">
+                        <!-- Item Image -->
+                        {% if item.images %}
+                            {% if 'cloudinary.com' in item.images[0].image_url %}
+                            <img src="{{ item.images[0].image_url }}" 
+                                 class="card-img-top" alt="{{ item.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.images[0].image_url) }}" 
+                                 class="card-img-top" alt="{{ item.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                        {% else %}
+                            <img src="{{ url_for('static', filename='default_item.jpg') }}" 
+                                 class="card-img-top" alt="Default Image"
+                                 style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            
+                            <!-- Price/Donation Badge -->
+                            {% if item.is_donation %}
+                                <span class="badge bg-success">FREE</span>
+                            {% else %}
+                                <p class="card-text">
+                                    <strong>Price:</strong> ₹{{ "%.2f"|format(item.price) }}
+                                    {% if item.is_bargainable %}
+                                        <span class="badge bg-success">Bargainable</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Not Bargainable</span>
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                            
+                            <!-- Item Status -->
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Status: 
+                                    {% if item.is_available %}
+                                        <span class="text-success">Available</span>
+                                    {% else %}
+                                        <span class="text-danger">Not Available</span>
+                                    {% endif %}
+                                </small>
+                            </p>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('items.item_detail', id=item.id) }}" 
+                                   class="btn btn-primary btn-sm">View Details</a>
+                                {% if item.is_available %}
+                                    <a href="{{ url_for('items.mark_unavailable', id=item.id) }}" 
+                                       class="btn btn-warning btn-sm">Mark as Unavailable</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <small class="text-muted">Posted on {{ item.date_posted.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

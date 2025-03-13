@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Frequently Asked Questions</h1>
+    
+    <div class="accordion" id="faqAccordion">
+        <!-- General Questions -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    What is Pass-it-on IITK?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Pass-it-on IITK is a platform exclusively for IITK students to buy, sell, or donate used items within the campus community. It helps students find affordable items and reduce waste by giving used items a second life.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Who can use this platform?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Pass-it-on IITK is exclusively for students, faculty, and staff of IIT Kanpur. You need an IITK email address to register and use the platform.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Buying Questions -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    How do I buy or get an item?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <ol>
+                        <li>Browse the available items on the "Buy/Get" page</li>
+                        <li>Click on an item to view its details</li>
+                        <li>Click "Show Interest" to express your interest in buying/getting the item</li>
+                        <li>Wait for the seller to accept your request</li>
+                        <li>Once accepted, you'll receive the seller's contact information</li>
+                        <li>Contact the seller to arrange a meeting and complete the transaction</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    How do payments work?
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>Pass-it-on IITK does not handle payments. Buyers and sellers arrange their own payment methods (cash, UPI, bank transfer, etc.) when they meet in person. We recommend using secure payment methods and meeting in public places on campus.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Selling Questions -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    How do I list an item for sale or donation?
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <ol>
+                        <li>Log in to your account</li>
+                        <li>Click on "Sell/Donate" in the navigation menu</li>
+                        <li>Fill out the item details form (name, category, condition, specifications, price, etc.)</li>
+                        <li>Upload clear photos of the item (up to 2 images)</li>
+                        <li>Submit the form to list your item</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSix">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    What items are not allowed on the platform?
+                </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>The following items are not allowed on Pass-it-on IITK:</p>
+                    <ul>
+                        <li>Illegal items or substances</li>
+                        <li>Weapons or dangerous materials</li>
+                        <li>Counterfeit or stolen goods</li>
+                        <li>Food items</li>
+                        <li>Medicines or health supplements</li>
+                        <li>Services (the platform is for physical items only)</li>
+                        <li>Items that violate IITK policies</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Account Questions -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSeven">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                    I forgot my password. How do I reset it?
+                </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <ol>
+                        <li>Click on "Login" in the navigation menu</li>
+                        <li>Click on "Forgot Password?" below the login form</li>
+                        <li>Enter your IITK email address</li>
+                        <li>Check your email for a password reset OTP</li>
+                        <li>Enter the OTP and your new password</li>
+                        <li>Submit the form to reset your password</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingEight">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                    How do I use the wishlist feature?
+                </button>
+            </h2>
+            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <p>The wishlist feature allows you to save items you're interested in but not ready to buy yet:</p>
+                    <ol>
+                        <li>Click on an item to view its details</li>
+                        <li>Click the heart icon next to the "Show Interest" button</li>
+                        <li>The item will be added to your wishlist</li>
+                        <li>Access your wishlist by clicking "Wishlist" in the navigation menu</li>
+                        <li>Remove items from your wishlist by clicking the "Remove from Wishlist" button</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq2">
+                    How do I contact a giver?
+                </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    To contact a giver, first express interest in their item. Once they accept your request,
+                    you'll be able to see their contact information and can reach out via WhatsApp, phone, or email.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq4">
+                    What happens after a giver accepts my request?
+                </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Once a giver accepts your request, you'll receive a notification and can view their contact details.
+                    You can then coordinate with them directly to arrange the exchange.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5 text-center">
+        <p>Still have questions? Check out our <a href="{{ url_for('main.help') }}">Help Center</a> or contact us at <a href="mailto:passitoniitk@gmail.com">passitoniitk@gmail.com</a>.</p>
+    </div>
+</div>
+{% endblock %} 

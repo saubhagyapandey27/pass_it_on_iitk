@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Items</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Seller</th>
+                    <th>Price</th>
+                    <th>Date Posted</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>
+                        <a href="{{ url_for('items.item_detail', id=item.id) }}" target="_blank">
+                            {{ item.name }}
+                        </a>
+                    </td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.seller.name }}</td>
+                    <td>
+                        {% if item.is_donation %}
+                        <span class="badge bg-success">Free</span>
+                        {% else %}
+                        ₹{{ item.price }}
+                        {% endif %}
+                    </td>
+                    <td>{{ item.date_posted.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if item.is_available %}
+                        <span class="badge bg-success">Yes</span>
+                        {% else %}
+                        <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.delete_item', id=item.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this item? This cannot be undone.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

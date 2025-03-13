@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Available Items</h2>
+    
+    <!-- Search and Filter Form -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('items.buy_get') }}" class="row g-3">
+                <input type="hidden" name="filtered" value="true">
+                
+                <!-- Search Bar -->
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="Search items..." value="{{ request.args.get('query', '') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Category</span>
+                        <select name="category" class="form-select">
+                            <option value="all" {% if request.args.get('category') == 'all' %}selected{% endif %}>All Categories</option>
+                            <option value="electronics" {% if request.args.get('category') == 'electronics' %}selected{% endif %}>Electronics</option>
+                            <option value="books" {% if request.args.get('category') == 'books' %}selected{% endif %}>Books</option>
+                            <option value="furniture" {% if request.args.get('category') == 'furniture' %}selected{% endif %}>Furniture</option>
+                            <option value="bicycles" {% if request.args.get('category') == 'bicycles' %}selected{% endif %}>Bicycles</option>
+                            <option value="clothing" {% if request.args.get('category') == 'clothing' %}selected{% endif %}>Clothing</option>
+                            <option value="sports" {% if request.args.get('category') == 'sports' %}selected{% endif %}>Sports Equipment</option>
+                            <option value="kitchen" {% if request.args.get('category') == 'kitchen' %}selected{% endif %}>Kitchen Appliances</option>
+                            <option value="stationery" {% if request.args.get('category') == 'stationery' %}selected{% endif %}>Stationery</option>
+                            <option value="other" {% if request.args.get('category') == 'other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters Toggle -->
+                <div class="col-12">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                        Advanced Filters <i class="fas fa-caret-down"></i>
+                    </button>
+                </div>
+                
+                <!-- Advanced Filters -->
+                <div class="collapse col-12" id="advancedFilters">
+                    <div class="card card-body">
+                        <div class="row g-3">
+                            <!-- Price Range -->
+                            <div class="col-md-6">
+                                <label class="form-label">Price Range</label>
+                                <div class="input-group">
+                                    <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.args.get('min_price', '0') }}">
+                                    <span class="input-group-text">to</span>
+                                    <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.args.get('max_price', '') }}">
+                                </div>
+                            </div>
+                            
+                            <!-- Condition -->
+                            <div class="col-md-6">
+                                <label class="form-label">Condition</label>
+                                <select name="condition" class="form-select">
+                                    <option value="all" {% if request.args.get('condition') == 'all' %}selected{% endif %}>All Conditions</option>
+                                    <option value="good" {% if request.args.get('condition') == 'good' %}selected{% endif %}>Good</option>
+                                    <option value="minor_defects" {% if request.args.get('condition') == 'minor_defects' %}selected{% endif %}>Minor Defects</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Checkboxes -->
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_donation" value="true" id="is_donation" 
+                                           {% if request.args.get('is_donation') == 'true' %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_donation">
+                                        Free Items Only
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_bargainable" value="true" id="is_bargainable"
+                                           {% if request.args.get('is_bargainable') == 'true' %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_bargainable">
+                                        Bargainable Only
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Sort By -->
+                            <div class="col-md-6">
+                                <label class="form-label">Sort By</label>
+                                <select name="sort_by" class="form-select">
+                                    <option value="newest" {% if request.args.get('sort_by') == 'newest' %}selected{% endif %}>Newest First</option>
+                                    <option value="oldest" {% if request.args.get('sort_by') == 'oldest' %}selected{% endif %}>Oldest First</option>
+                                    <option value="price_low" {% if request.args.get('sort_by') == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                                    <option value="price_high" {% if request.args.get('sort_by') == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Apply Filters Button -->
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{{ url_for('items.buy_get') }}" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Items Grid -->
+    <div class="row g-4">
+        {% for item in items.items %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100">
+                {% if item.images %}
+                {% if 'cloudinary.com' in item.images[0].image_url %}
+                <img src="{{ item.images[0].image_url }}" 
+                     class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{{ url_for('static', filename='uploads/' + item.images[0].image_url) }}" 
+                     class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                {% else %}
+                <div class="bg-light text-center py-5">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-truncate">{{ item.name }}</h5>
+                    <span class="badge bg-info mb-2">{{ item.category.replace('_', ' ').title() }}</span>
+                    {% if item.is_donation %}
+                    <span class="badge bg-success mb-2">FREE</span>
+                    {% else %}
+                    <p class="card-text mb-2">₹{{ "%.2f"|format(item.price) }}</p>
+                    {% if item.is_bargainable %}
+                    <span class="badge bg-success mb-2">Bargainable</span>
+                    {% else %}
+                    <span class="badge bg-danger mb-2">Not Bargainable</span>
+                    {% endif %}
+                    {% endif %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Condition: {{ item.condition.replace('_', ' ').title() }}
+                        </small>
+                    </p>
+                    <div class="d-grid">
+                        <a href="{{ url_for('items.item_detail', id=item.id) }}" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Posted {{ item.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if items.items %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if items.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ pagination_url }}{% if '?' in pagination_url %}&{% else %}?{% endif %}page={{ items.prev_num }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+
+            {% for page_num in items.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                {% if page_num %}
+                    {% if page_num == items.page %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ pagination_url }}{% if '?' in pagination_url %}&{% else %}?{% endif %}page={{ page_num }}">{{ page_num }}</a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if items.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ pagination_url }}{% if '?' in pagination_url %}&{% else %}?{% endif %}page={{ items.next_num }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="text-center mt-5">
+        <h4>No items available at the moment</h4>
+        <p>Be the first to <a href="{{ url_for('items.sell_donate') }}">list an item</a>!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

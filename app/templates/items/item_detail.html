@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Item Images -->
+        <div class="col-md-6">
+            <div id="itemCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if item.images %}
+                        {% for image in item.images %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                {% if 'cloudinary.com' in image.image_url %}
+                                    <img src="{{ image.image_url }}" class="d-block w-100" alt="{{ item.name }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='uploads/' + image.image_url) }}" class="d-block w-100" alt="{{ item.name }}">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="carousel-item active">
+                            <img src="{{ url_for('static', filename='default_item.jpg') }}" class="d-block w-100" alt="Default Image">
+                        </div>
+                    {% endif %}
+                </div>
+                {% if item.images and item.images|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#itemCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#itemCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Item Details -->
+        <div class="col-md-6">
+            <h2>{{ item.name }}</h2>
+            
+            <!-- Price/Donation Info -->
+            <div class="mb-3">
+                {% if item.is_donation %}
+                    <span class="badge bg-success fs-5">FREE</span>
+                {% else %}
+                    <h3 class="text-primary">₹{{ "%.2f"|format(item.price) }}</h3>
+                    {% if item.is_bargainable %}
+                        <span class="badge bg-success">Bargainable</span>
+                    {% else %}
+                        <span class="badge bg-danger">Not Bargainable</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- Giver Info -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Giver Information</h5>
+                    <p class="card-text">
+                        <strong>Name:</strong> {{ item.seller.name }}<br>
+                        <strong>Batch:</strong> {{ item.seller.batch }}<br>
+                        <strong>Department:</strong> {{ item.seller.department }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item Details -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Item Details</h5>
+                    <p class="card-text">
+                        <strong>Condition:</strong> {{ item.condition.replace('_', ' ').title() }}<br>
+                        {% if item.condition == 'minor_defects' and item.defect_description %}
+                            <strong>Defect Description:</strong><br>
+                            {{ item.defect_description }}<br>
+                        {% endif %}
+                        <strong>Specifications:</strong><br>
+                        {{ item.specifications }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Social Sharing -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Share This Item</h5>
+                    <div class="d-flex gap-2">
+                        <!-- WhatsApp -->
+                        <a href="https://api.whatsapp.com/send?text={{ 'Check out this item on Pass-it-on IITK: ' + item.name + ' - ' + request.url|urlencode }}" 
+                           target="_blank" class="btn btn-success">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}" 
+                           target="_blank" class="btn btn-primary">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        
+                        <!-- X (formerly Twitter) -->
+                        <a href="https://twitter.com/intent/tweet?text={{ 'Check out this item on Pass-it-on IITK: ' + item.name|urlencode }}&url={{ request.url|urlencode }}" 
+                           target="_blank" class="btn text-white" style="background-color: #000000;">
+                            <span style="font-weight: bold; font-family: Arial, sans-serif;">𝕏</span>
+                        </a>
+                        
+                        <!-- Telegram -->
+                        <a href="https://t.me/share/url?url={{ request.url|urlencode }}&text={{ 'Check out this item on Pass-it-on IITK: ' + item.name|urlencode }}" 
+                           target="_blank" class="btn btn-primary" style="background-color: #0088cc;">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>            
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mb-3">
+                {% if current_user.is_authenticated and current_user != item.seller %}
+                    <button type="button" class="btn btn-primary btn-lg flex-grow-1" data-bs-toggle="modal" data-bs-target="#confirmInterestModal">
+                        Show Interest to {% if item.is_donation %}Get{% else %}Buy{% endif %}
+                    </button>
+                    
+                    <!-- Wishlist Button -->
+                    <form action="{{ url_for('items.toggle_wishlist', id=item.id) }}" method="POST" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" id="wishlistBtn" class="btn {% if current_user.wishlisted_items.filter_by(item_id=item.id).first() %}btn-danger{% else %}btn-outline-danger{% endif %} btn-lg">
+                            <i class="{% if current_user.wishlisted_items.filter_by(item_id=item.id).first() %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                    </form>
+                {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-primary btn-lg flex-grow-1">
+                        Login to Show Interest
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+{% if current_user.is_authenticated and current_user != item.seller %}
+<div class="modal fade" id="confirmInterestModal" tabindex="-1" aria-labelledby="confirmInterestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmInterestModalLabel">Confirm Interest</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to show interest in this item? An email will be sent to the giver.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="{{ url_for('requests.show_interest', item_id=item.id) }}" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
