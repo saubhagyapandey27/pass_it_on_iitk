@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">{{ title }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Maintenance Report</h5>
+            
+            <p class="card-text">
+                Total issues fixed: {{ total_fixed }}
+            </p>
+            
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Missing URLs
+                    <span class="badge bg-primary rounded-pill">{{ fixes.missing }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Local URLs removed (not usable in production)
+                    <span class="badge bg-primary rounded-pill">{{ fixes.local_to_default }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Invalid entries deleted
+                    <span class="badge bg-primary rounded-pill">{{ fixes.deleted }}</span>
+                </li>
+            </ul>
+            
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

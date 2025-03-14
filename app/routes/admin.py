@@ -97,3 +97,54 @@ def delete_request(id):
     db.session.commit()
     flash(f'Request has been deleted.', 'success')
     return redirect(url_for('admin.requests'))
+
+@bp.route('/fix-image-urls')
+@login_required
+@admin_required
+def fix_image_urls():
+    """Maintenance route to fix any broken image URLs in the database"""
+    import os
+    import cloudinary
+    from flask import current_app
+    
+    # Count of different types of fixes
+    fixes = {
+        'missing': 0,
+        'local_to_default': 0,
+        'deleted': 0
+    }
+    
+    # Check if Cloudinary is configured
+    cloudinary_configured = (
+        os.environ.get('CLOUDINARY_URL') or 
+        (os.environ.get('CLOUDINARY_CLOUD_NAME') and 
+         os.environ.get('CLOUDINARY_API_KEY') and 
+         os.environ.get('CLOUDINARY_API_SECRET'))
+    )
+    
+    # Get all image entries
+    images = ItemImage.query.all()
+    current_app.logger.info(f"Checking {len(images)} image entries")
+    
+    for image in images:
+        # Case 1: Empty URL - delete the image entry
+        if not image.image_url:
+            current_app.logger.info(f"Deleting image entry with no URL for item {image.item_id}")
+            db.session.delete(image)
+            fixes['deleted'] += 1
+            continue
+            
+        # Case 2: Local storage URL in production (unusable) - use a default
+        if not image.image_url.startswith('http') and os.environ.get('FLASK_ENV') == 'production':
+            current_app.logger.info(f"Local storage URL in production for item {image.item_id}: {image.image_url}")
+            # Remove this image record as it's not usable in production
+            db.session.delete(image)
+            fixes['local_to_default'] += 1
+    
+    # Commit all changes
+    db.session.commit()
+    
+    return render_template('admin/maintenance.html', 
+                          title='Image URL Fixes', 
+                          fixes=fixes, 
+                          total_fixed=sum(fixes.values()))

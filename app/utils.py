@@ -125,20 +125,29 @@ def save_image(image_file, item_id):
     if cloudinary_configured:
         try:
             current_app.logger.info(f"Attempting to upload image to Cloudinary for item {item_id}")
-            response = cloudinary.uploader.upload(
-                img_io,
-                folder="pass-it-on-iitk",
-                public_id=f"item_{item_id}_{random_hex}"
-            )
-            cloudinary_url = response['secure_url']
-            current_app.logger.info(f"Successfully uploaded to Cloudinary: {cloudinary_url}")
-            return cloudinary_url
+            
+            # Make sure we're using the correct module for uploader
+            upload_params = {
+                'folder': "pass-it-on-iitk",
+                'public_id': f"item_{item_id}_{random_hex}"
+            }
+            
+            response = cloudinary.uploader.upload(img_io, **upload_params)
+            
+            if 'secure_url' in response:
+                cloudinary_url = response['secure_url']
+                current_app.logger.info(f"Successfully uploaded to Cloudinary: {cloudinary_url}")
+                return cloudinary_url
+            else:
+                current_app.logger.error(f"Cloudinary response missing secure_url: {response}")
+                raise Exception("Invalid Cloudinary response")
+                
         except Exception as e:
             current_app.logger.error(f"Cloudinary upload failed: {str(e)}")
             # Fall back to local storage only if not in production
             if os.environ.get('FLASK_ENV') == 'production':
-                current_app.logger.error("Cannot fall back to local storage in production!")
-                abort(500, "Failed to upload image to cloud storage")
+                current_app.logger.error("Cannot fall back to local storage in production! Using default image.")
+                return None
     
     # Local storage as fallback (for development) or if Cloudinary not configured
     current_app.logger.info(f"Using local storage for image (item {item_id})")

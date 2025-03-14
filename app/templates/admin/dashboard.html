@@ -35,5 +35,24 @@
             </div>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Maintenance Tools</h5>
+                    <div class="list-group">
+                        <a href="{{ url_for('admin.fix_image_urls') }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Fix Image URLs</h6>
+                                <small class="text-muted">Database maintenance</small>
+                            </div>
+                            <p class="mb-1">Fixes broken or missing image URLs in the database</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

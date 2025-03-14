@@ -10,10 +10,14 @@
                     {% if item.images %}
                         {% for image in item.images %}
                             <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                {% if image.image_url.startswith('http') %}
-                                    <img src="{{ image.image_url }}" class="d-block w-100" alt="{{ item.name }}">
+                                {% if image.image_url %}
+                                    {% if image.image_url.startswith('http') %}
+                                        <img src="{{ image.image_url }}" class="d-block w-100" alt="{{ item.name }}">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='uploads/' + image.image_url) }}" class="d-block w-100" alt="{{ item.name }}">
+                                    {% endif %}
                                 {% else %}
-                                    <img src="{{ url_for('static', filename='uploads/' + image.image_url) }}" class="d-block w-100" alt="{{ item.name }}">
+                                    <img src="{{ url_for('static', filename='default_item.jpg') }}" class="d-block w-100" alt="Default Image">
                                 {% endif %}
                             </div>
                         {% endfor %}
