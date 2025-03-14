@@ -42,12 +42,25 @@ def create_app():
         os.environ.get('CLOUDINARY_API_SECRET')
     ):
         import cloudinary
-        cloudinary.config(
-            cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
-            api_key=os.environ.get('CLOUDINARY_API_KEY'),
-            api_secret=os.environ.get('CLOUDINARY_API_SECRET')
-        )
-        app.logger.info('Cloudinary initialized')
+        try:
+            if os.environ.get('CLOUDINARY_URL'):
+                app.logger.info('Initializing Cloudinary with CLOUDINARY_URL')
+                # Let cloudinary use the URL environment variable automatically
+                cloudinary.config()
+            else:
+                app.logger.info('Initializing Cloudinary with individual credentials')
+                cloudinary.config(
+                    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+                    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+                    api_secret=os.environ.get('CLOUDINARY_API_SECRET')
+                )
+            
+            # Test the Cloudinary configuration
+            test_response = cloudinary.api.ping()
+            app.logger.info(f'Cloudinary connection test: {test_response}')
+            app.logger.info('Cloudinary initialized successfully')
+        except Exception as e:
+            app.logger.error(f'Cloudinary initialization failed: {str(e)}')
 
     # Configure Content Security Policy
     csp = {

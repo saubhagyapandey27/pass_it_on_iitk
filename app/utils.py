@@ -113,34 +113,47 @@ def save_image(image_file, item_id):
     
     img_io.seek(0)
     
-    # Check if we're using Cloudinary (in production) or local storage (in development)
-    if os.environ.get('CLOUDINARY_URL'):
-        # Upload to Cloudinary
+    # Check if any of the Cloudinary environment variables are set
+    cloudinary_configured = (
+        os.environ.get('CLOUDINARY_URL') or 
+        (os.environ.get('CLOUDINARY_CLOUD_NAME') and 
+         os.environ.get('CLOUDINARY_API_KEY') and 
+         os.environ.get('CLOUDINARY_API_SECRET'))
+    )
+    
+    # Always try to use Cloudinary first when deployed
+    if cloudinary_configured:
         try:
+            current_app.logger.info(f"Attempting to upload image to Cloudinary for item {item_id}")
             response = cloudinary.uploader.upload(
                 img_io,
                 folder="pass-it-on-iitk",
                 public_id=f"item_{item_id}_{random_hex}"
             )
-            # Return the secure URL from Cloudinary
-            return response['secure_url']
+            cloudinary_url = response['secure_url']
+            current_app.logger.info(f"Successfully uploaded to Cloudinary: {cloudinary_url}")
+            return cloudinary_url
         except Exception as e:
-            current_app.logger.error(f"Cloudinary upload error: {str(e)}")
-            abort(500, "Failed to upload image")
+            current_app.logger.error(f"Cloudinary upload failed: {str(e)}")
+            # Fall back to local storage only if not in production
+            if os.environ.get('FLASK_ENV') == 'production':
+                current_app.logger.error("Cannot fall back to local storage in production!")
+                abort(500, "Failed to upload image to cloud storage")
+    
+    # Local storage as fallback (for development) or if Cloudinary not configured
+    current_app.logger.info(f"Using local storage for image (item {item_id})")
+    image_filename = f'item_{item_id}_{random_hex}{file_ext}'
+    image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+    
+    # Save locally
+    if file_ext in ['.jpg', '.jpeg']:
+        image.save(image_path, 'JPEG', quality=85)
+    elif file_ext == '.png':
+        image.save(image_path, 'PNG', optimize=True)
     else:
-        # Local storage for development
-        image_filename = f'item_{item_id}_{random_hex}{file_ext}'
-        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
-        
-        # Save locally
-        if file_ext in ['.jpg', '.jpeg']:
-            image.save(image_path, 'JPEG', quality=85)
-        elif file_ext == '.png':
-            image.save(image_path, 'PNG', optimize=True)
-        else:
-            image.save(image_path, optimize=True)
-        
-        return image_filename
+        image.save(image_path, optimize=True)
+    
+    return image_filename
 
 def generate_otp():
     return str(secrets.randbelow(900000) + 100000)  # 6-digit OTP 
