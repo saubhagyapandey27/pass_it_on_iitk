@@ -4,7 +4,7 @@ import os
 
 app = create_app()
 
-# Run migrations on first startup only
+# Run migrations on startup in production
 if __name__ != '__main__' and os.environ.get('FLASK_ENV') == 'production':
     with app.app_context():
         # Check if we need to run migrations (first deployment)
@@ -12,18 +12,17 @@ if __name__ != '__main__' and os.environ.get('FLASK_ENV') == 'production':
         inspector = inspect(db.engine)
         
         try:
-            # If alembic_version table doesn't exist, we need to run migrations
-            if not inspector.has_table('alembic_version'):
-                app.logger.info('Running database migrations...')
-                upgrade()
-                app.logger.info('Database migrations completed successfully')
-            else:
-                app.logger.info('Database already initialized, skipping migrations')
-        except Exception as e:
-            app.logger.error(f"Error during migration: {str(e)}")
-            # If migration fails, at least create tables
+            # First create any missing tables
+            app.logger.info('Creating any missing database tables...')
             db.create_all()
-            app.logger.error("Falling back to db.create_all()")
+            
+            # Then apply migrations to ensure proper structure
+            app.logger.info('Running database migrations...')
+            upgrade()
+            
+            app.logger.info('Database initialization completed successfully')
+        except Exception as e:
+            app.logger.error(f"Error during database initialization: {str(e)}")
 
 if __name__ == '__main__':
     with app.app_context():
