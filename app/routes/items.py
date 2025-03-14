@@ -31,11 +31,17 @@ def sell_donate():
 
         # Handle image uploads
         images = request.files.getlist('images')
-        for image in images[:4]:  # Limit to 4 images
+        current_app.logger.info(f"Received {len(images)} images for item {item.id}")
+        
+        # Limit to 2 images
+        for image in images[:2]:
             if image and image.filename:
+                current_app.logger.info(f"Processing image: {image.filename}")
                 image_url = save_image(image, item.id)
-                item_image = ItemImage(image_url=image_url, item=item)
-                db.session.add(item_image)
+                if image_url:
+                    item_image = ItemImage(image_url=image_url, item=item)
+                    db.session.add(item_image)
+                    current_app.logger.info(f"Added image with URL: {image_url} for item {item.id}")
         
         db.session.commit()
         flash('Your item has been listed successfully!', 'success')

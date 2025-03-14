@@ -94,23 +94,37 @@
     </form>
 </div>
 
-{% block scripts %}
 <script>
-    // Show/hide defect description based on condition
-    document.getElementById('condition').addEventListener('change', function() {
-        var defectDiv = document.getElementById('defectDescriptionDiv');
-        defectDiv.style.display = this.value === 'minor_defects' ? 'block' : 'none';
-    });
+    // Execute when DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide defect description based on condition
+        document.getElementById('condition').addEventListener('change', function() {
+            var defectDiv = document.getElementById('defectDescriptionDiv');
+            defectDiv.style.display = this.value === 'minor_defects' ? 'block' : 'none';
+        });
 
-    // Show/hide price and bargainable sections based on donation
-    document.getElementById('is_donation').addEventListener('change', function() {
-        var priceSection = document.getElementById('priceSection');
-        priceSection.style.display = this.checked ? 'none' : 'block';
-        if (this.checked) {
+        // Show/hide price and bargainable sections based on donation
+        document.getElementById('is_donation').addEventListener('change', function() {
+            var priceSection = document.getElementById('priceSection');
+            priceSection.style.display = this.checked ? 'none' : 'block';
+            if (this.checked) {
+                document.getElementById('price').value = '0';
+                document.getElementById('is_bargainable').checked = false;
+            }
+        });
+        
+        // Run the change event on page load to set initial state
+        var isDonationChecked = document.getElementById('is_donation').checked;
+        if (isDonationChecked) {
+            document.getElementById('priceSection').style.display = 'none';
             document.getElementById('price').value = '0';
             document.getElementById('is_bargainable').checked = false;
         }
+        
+        var conditionValue = document.getElementById('condition').value;
+        if (conditionValue === 'minor_defects') {
+            document.getElementById('defectDescriptionDiv').style.display = 'block';
+        }
     });
 </script>
-{% endblock %}
 {% endblock %} 

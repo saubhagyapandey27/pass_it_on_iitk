@@ -109,7 +109,7 @@ class ItemForm(FlaskForm):
     images = FileField('Upload Images (Max 2)', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')
-    ])
+    ], render_kw={"multiple": True})
     submit = SubmitField('List Item')
 
     def validate_defect_description(self, field):
